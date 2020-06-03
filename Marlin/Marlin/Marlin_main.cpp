@@ -4410,7 +4410,7 @@ void home_all_axes() { gcode_G28(true); }
      */
     if (!g29_in_progress) {
 
-      #if ENABLED(PROBE_MANUALLY) || ENABLED(AUTO_BED_LEVELING_LINEAR)
+      #if ENABLED(PROBE_MANUALLY) || ENABLED(AUTO_BED_LEVELING_LINEAR) //|| ENABLED(AUTO_BED_LEVELING_BILINEAR)
         abl_probe_index = -1;
       #endif
 
@@ -4796,8 +4796,10 @@ void home_all_axes() { gcode_G28(true); }
 
         bool zig = PR_OUTER_END & 1;  // Always end at RIGHT and BACK_PROBE_BED_POSITION
 
+        measured_z = 0;
+
         // Outer loop is Y with PROBE_Y_FIRST disabled
-        for (uint8_t PR_OUTER_VAR = 0; PR_OUTER_VAR < PR_OUTER_END; PR_OUTER_VAR++) {
+        for (uint8_t PR_OUTER_VAR = 0; PR_OUTER_VAR < PR_OUTER_END && !isnan(measured_z); PR_OUTER_VAR++) {
 
           int8_t inStart, inStop, inInc;
 
@@ -4829,14 +4831,14 @@ void home_all_axes() { gcode_G28(true); }
 
             #if IS_KINEMATIC
               // Avoid probing outside the round or hexagonal area
-              if (!position_is_reachable_by_probe_xy(xProbe, yProbe)) continue;
+              if (!position_is_reachable_by_probe(xProbe, yProbe)) continue;
             #endif
 
             measured_z = faux ? 0.001 * random(-100, 101) : probe_pt(xProbe, yProbe, stow_probe_after_each, verbose_level);
 
             if (isnan(measured_z)) {
-              planner.abl_enabled = abl_should_enable;
-              return;
+              set_bed_leveling_enabled(abl_should_enable);
+              break;
             }
 
             #if ENABLED(AUTO_BED_LEVELING_LINEAR)
@@ -4846,6 +4848,8 @@ void home_all_axes() { gcode_G28(true); }
               eqnAMatrix[abl_probe_index + 0 * abl2] = xProbe;
               eqnAMatrix[abl_probe_index + 1 * abl2] = yProbe;
               eqnAMatrix[abl_probe_index + 2 * abl2] = 1;
+
+              //incremental_LSF(&lsf_results, xProbe, yProbe, measured_z);
 
             #elif ENABLED(AUTO_BED_LEVELING_BILINEAR)
 
@@ -4858,6 +4862,7 @@ void home_all_axes() { gcode_G28(true); }
 
           } // inner
         } // outer
+
 
       #elif ENABLED(AUTO_BED_LEVELING_3POINT)
 
