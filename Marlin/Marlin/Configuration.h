@@ -156,8 +156,8 @@
 	#define CUSTOM_MACHINE_NAME "Printo H3+ Tower"
 #endif
 #ifdef PRINTO_H3_BIGGIE
-	#define MACHINE_NAME "Printo H3 Biggie"
-	#define CUSTOM_MACHINE_NAME "Printo H3 Biggie"
+	#define MACHINE_NAME "Printo H3 Ex"
+	#define CUSTOM_MACHINE_NAME "Printo H3 Ex"
 #endif
 #ifdef PRINTO_H3_MIDI
 #define MACHINE_NAME "Printo H3 Midi"
