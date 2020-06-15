@@ -125,11 +125,11 @@
 // WYBOR DRUKARKI NASTEPUJE TUTAJ W TORONTO!
 // ============================================
 
-#define PRINTO_H3
+//#define PRINTO_H3
 //#define PRINTO_H3_PLUS
 //#define PRINTO_H3_TOWER
 //#define PRINTO_H3_TOWERPLUS
-//#define PRINTO_H3_BIGGIE
+#define PRINTO_H3_BIGGIE
 //#define PRINTO_H3_MIDI
 //lcd 3.0
 // ============================================
@@ -377,9 +377,14 @@
   // If you are using a pre-configured hotend then you can use one of the value sets by uncommenting it
 
 	// Printo H3
-	#define  DEFAULT_Kp 10.22
-	#define  DEFAULT_Ki 0.56
-	#define  DEFAULT_Kd 46.36
+	//#define  DEFAULT_Kp 10.22
+	//#define  DEFAULT_Ki 0.56
+	//#define  DEFAULT_Kd 46.36
+
+  // Printo H3 Biggie
+  #define DEFAULT_Kp 18.97
+  #define DEFAULT_Ki 1.55
+  #define DEFAULT_Kd 57.88
 
   // MakerGear
   //#define  DEFAULT_Kp 7.0
@@ -820,7 +825,7 @@
 #if defined(PRINTO_H3_BIGGIE)
 #define X_MAX_POS 305
 #define Y_MAX_POS 310
-#define Z_MAX_POS 556
+#define Z_MAX_POS 520
 #endif
 
 #if defined(PRINTO_H3_MIDI)
@@ -987,7 +992,13 @@
   //===========================================================================
 
   #define MESH_INSET 40          // Mesh inset margin on print area
-  #define GRID_MAX_POINTS_X 2    // Don't use more than 7 points per axis, implementation limited.
+
+  #if ENABLED(PRINTO_H3_MIDI) || ENABLED(PRINTO_H3_BIGGIE)
+    #define GRID_MAX_POINTS_X 3    // Don't use more than 7 points per axis, implementation limited.
+  #else
+    #define GRID_MAX_POINTS_X 2    // Don't use more than 7 points per axis, implementation limited.
+  #endif
+
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
   //#define MESH_G28_REST_ORIGIN // After homing all axes ('G28' or 'G28 XYZ') rest Z at Z_MIN_POS
