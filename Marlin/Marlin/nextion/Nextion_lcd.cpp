@@ -1893,7 +1893,7 @@
 				SDstatus = SD_INSERT;
 				SD.setValue(SDstatus,"stat");
 			}
-			else if (card.cardOK && SDstatus != SD_NO_INSERT) {
+			else if (!card.cardOK && SDstatus != SD_NO_INSERT) {
 				SDstatus = SD_NO_INSERT;
 				SD.setValue(SDstatus,"stat");
 			}
@@ -1933,6 +1933,8 @@
     if (!NextionON) return;
 	
     PageID = Nextion_PageID();
+
+		nex_check_sdcard_present();	// sprawdz obecnosc karty sd, mount/unmount // potencjalnie tutaj jest bug z odswiezajacym sie ekranem SD 
 
     switch(PageID)
 		{
@@ -2044,15 +2046,13 @@
 						if(SDstatus == SD_PRINTING || SDstatus == SD_PAUSE)
 						{
 							// cos gdy drukuje
-							//sdfolder.setText_PGM(PSTR(MSG_SD_PRINTING));
-							//setpageSD();
 						}
 						else
 						{
 							setpageSD();
 						}
 					}
-					nex_check_sdcard_present(); // sprawdz obecnosc karty sd, mount/unmount // potencjalnie tutaj jest bug z odswiezajacym sie ekranem SD 
+					//nex_check_sdcard_present(); // sprawdz obecnosc karty sd, mount/unmount // potencjalnie tutaj jest bug z odswiezajacym sie ekranem SD 
           break;
 			#endif
 			case HeatingPage:
