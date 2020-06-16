@@ -1857,19 +1857,21 @@
 			{
 				SERIAL_ECHOLNPGM("sd_status:false");
 				card.initsd();																								// inicjalizacja karty
-				setpageSD();																									// ustaw strone i przekaz flage do strony status
+				//setpageSD();																									// ustaw strone i przekaz flage do strony status
 				SDstatus = SD_INSERT;
 				SD.setValue(SDstatus, "stat");
 				if (lcd_sd_status != 2) LCD_MESSAGEPGM(MSG_SD_INSERTED);			// MSG
+				if (PageID == SDPage){ setpageSD(); }													// ustaw strone i przekaz flage do strony status
 			}
 			else																														// je�li SD_DETECT == true:
 			{
 				SERIAL_ECHOLNPGM("sd_status:true");
 				card.release();																								// odmontuj kart� SD
-				setpageSD();																									// ustaw strone i przekaz flage do strony status
+				//setpageSD();																									// ustaw strone i przekaz flage do strony status
 				SDstatus = SD_NO_INSERT;
 				SD.setValue(SDstatus, "stat");
 				if (lcd_sd_status != 2) LCD_MESSAGEPGM(MSG_SD_REMOVED);				// MSG
+				if (PageID == SDPage){ setpageSD(); }		
 			}
 			lcd_sd_status = sd_status;
 		} // CALY IF SPRAWDZA STAN SD_DETECT I JEGO ZMIANE: SD jest->init / SD niet->release
