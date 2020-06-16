@@ -796,12 +796,23 @@
   #define PAUSE_PARK_PLUY_LENGTH 15						// EXtrude some filament before long retraction to make sure that filament will not be jammed inside hotend, dodane
                                               // It is a short retract used immediately after print interrupt before move to filament exchange position
   #define FILAMENT_CHANGE_UNLOAD_FEEDRATE 80  // Unload filament feedrate in mm/s - filament unloading can be fast
-  #define FILAMENT_CHANGE_UNLOAD_LENGTH 680   // Unload filament length from hotend in mm
+
+  #if ENABLED(PRINTO_H3_BIGGIE) || ENABLED(PRINTO_H3_MIDI)
+    #define FILAMENT_CHANGE_UNLOAD_LENGTH      880  // (mm) The length of filament for a complete unload.
+  #else
+    #define FILAMENT_CHANGE_UNLOAD_LENGTH      680  // (mm) The length of filament for a complete unload.
+  #endif
                                               // Longer length for bowden printers to unload filament from whole bowden tube,
                                               // shorter length for printers without bowden to unload filament from extruder only,
                                               // 0 to disable unloading for manual unloading
   #define FILAMENT_CHANGE_LOAD_FEEDRATE 70    // Load filament feedrate in mm/s - filament loading into the bowden tube can be fast
+
+  #if ENABLED(PRINTO_H3_BIGGIE) || ENABLED(PRINTO_H3_MIDI)
+  #define FILAMENT_CHANGE_LOAD_LENGTH 750     // Load filament length over hotend in mm
+  #else
   #define FILAMENT_CHANGE_LOAD_LENGTH 650     // Load filament length over hotend in mm
+  #endif
+
                                               // Longer length for bowden printers to fast load filament into whole bowden tube over the hotend,
                                               // Short or zero length for printers without bowden where loading is not used
   #define ADVANCED_PAUSE_EXTRUDE_FEEDRATE 4   // Extrude filament feedrate in mm/s - must be slower than load feedrate
