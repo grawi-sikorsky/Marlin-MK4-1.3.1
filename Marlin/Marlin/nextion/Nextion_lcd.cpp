@@ -38,11 +38,15 @@
   #include "library/Nextion.h"
 
   bool        NextionON                 = false,
-              show_Wave                 = true,
+              //show_Wave                 = true,
               lcdDrawUpdate             = false,
-              lcd_clicked               = false;
+              lcd_clicked               = false,
+							nex_m600_heatingup 				= 0;
+
   uint8_t     PageID                    = 0,
               lcd_status_message_level  = 0;
+	uint8_t 		lcd_sd_status;
+
   uint16_t    slidermaxval              = 20;
   char        bufferson[70]             = { 0 };
   char        lcd_status_message[24]    = WELCOME_MSG;
@@ -52,15 +56,12 @@
 	int 	nex_file_row_clicked;
 	char	filename_printing[40];
 
-  extern uint8_t progress_printing; // dodane nex
 	extern bool nex_filament_runout_sensor_flag;
-	bool nex_m600_heatingup = 0;
-	#if PIN_EXISTS(SD_DETECT)
-	uint8_t lcd_sd_status;
-	#endif
+  extern uint8_t progress_printing;
 
 	extern float destination[XYZE];// = { 0.0 };
 	extern bool g29_in_progress;// = false;
+
 	extern inline void set_current_to_destination() { COPY(current_position, destination); }
 	extern inline void set_destination_to_current() { COPY(destination, current_position); }
 	extern void home_all_axes();
@@ -69,20 +70,23 @@
     // 0 card not present, 1 SD not insert, 2 SD insert, 3 SD printing
     enum SDstatus_enum {NO_SD = 0, SD_NO_INSERT = 1, SD_INSERT = 2, SD_PRINTING = 3, SD_PAUSE = 4 };
 		enum NexPage_enum {
-			StatusPage = 1,
-			SDPage = 2,
-			HeatingPage = 3,
-			MaintainPage = 4,
-			SetupPage = 5,
-			MovePage = 6,
-			SpeedPage = 7,
-			FilamentPage = 11,
-			BedLevelPage = 12,
-			SelectPage = 14,
-			YesNoPage = 15,
-			FlowPage = 21,
-			KillPage = 30,
+			EPageStatus 				= 1,
+			EPageSD 						= 2,
+			EPageHeating 				= 3,
+			EPageMaintain 			= 4,
+			EPageSetup 					= 5,
+			EPageMove 					= 6,
+			EPageSpeed 					= 7,
+			EPageFilament 			= 11,
+			EPageBedlevel 			= 12,
+			EPageSelect 				= 14,
+			EPageYesno 					= 15,
+			EPageFlow 					= 21,
+			EPageKill 					= 30,
+			EPageScreenSaver 		= 34,
+			EPageBedlevelAuto 	= 35,
 		};
+
     SDstatus_enum SDstatus    = NO_SD;
 		#if ENABLED(NEX_UPLOAD)
 			NexUpload Firmware(NEXTION_FIRMWARE_FILE, 57600);
@@ -91,7 +95,6 @@
 	#if ENABLED(BABYSTEPPING)
 			int _babystep_z_shift = 0;
 	#endif
-
 
   #if ENABLED(NEXTION_GFX)
     GFX gfx = GFX(1, 1, 1, 1);
@@ -110,36 +113,44 @@
 		void lcd_advanced_pause_resume_message();
 	#endif
 
+	#if ENABLED(ULTRA_LCD) || ENABLED(NEXTION_DISPLAY)
+		#if ENABLED(PLOSS_SUPPORT)
+		void ploss_recovery_menu();
+		void ploss_recovery_auto_menu();
+		void lcd_ploss_menu_ask_twice();
+			#if ENABLED(BABYSTEPPING) && ENABLED(ULTRA_LCD)
+				int _babystep_z_shift = 0;
+			#endif
+		#endif
+	#endif
   /**
    *******************************************************************
    * NEX lista stron uzytych
    *******************************************************************
    */
 
-  NexObject Pprinter      = NexObject(1,  0,  "stat");
+  NexObject Pprinter      = NexObject(EPageStatus,  0,  "stat");
 
-	NexObject Pheatup				= NexObject(3, 0,	"heatup");
-	NexObject Poptions			= NexObject(4, 0,	"maintain");
-  NexObject Psetup        = NexObject(5,  0,  "setup");
+	//NexObject Pheatup				= NexObject(3, 0,	"heatup"); **
+	NexObject Poptions			= NexObject(EPageMaintain, 0,	"maintain");
+  NexObject Psetup        = NexObject(EPageSetup,  0,  "setup");
 
-  NexObject Pfilament     = NexObject(11, 0, "filament");
-	NexObject Pprobe        = NexObject(12, 0,  "bedlevel");
+  NexObject Pfilament     = NexObject(EPageFilament, 0, "filament");
+	NexObject Pselect       = NexObject(EPageSelect, 0,  "select");
+  NexObject Pyesno        = NexObject(EPageYesno, 0,  "yesno");
 
-	NexObject Pselect       = NexObject(14, 0,  "select");
-  NexObject Pyesno        = NexObject(15, 0,  "yesno");
-
-  //NexObject Ptime         = NexObject(17, 0,  "infomove");
-  //NexObject Pfanspeedpage = NexObject(18, 0,  "fanspeedpage");
-	//NexObject Pstats				= NexObject(19, 0,	"statscreen");
-	//NexObject Ptsettings		= NexObject(20, 0,  "tempsettings");
-	//NexObject Pinfobedlevel = NexObject(21, 0, "infobedlevel");
-	//NexObject Pservice			= NexObject(22, 0, "servicepage");
-	NexObject Paccel				= NexObject(18, 0, "accelpage");
+	//NexObject Paccel				= NexObject(18, 0, "accelpage");  **
 	//NexObject Pjerk					= NexObject(25, 0, "jerkpage");
-	NexObject Pkill					= NexObject(30, 0, "kill");
+	NexObject Pkill					= NexObject(EPageKill, 0, "kill");
 	// 
 	// == 9 
 
+	#if ENABLED(NEXTION_SEMIAUTO_BED_LEVEL)
+	NexObject Pprobe        = NexObject(EPageBedlevel, 0,  "bedlevel");
+	#endif
+	#if ENABLED(NEXTION_AUTO_BED_LEVEL)
+	NexObject Palevel				= NexObject(EPageBedlevelAuto, 0, "ABL");
+	#endif
   /**
    *******************************************************************
    * NEX komponenty strona: start
@@ -220,8 +231,6 @@
 	NexObject heatupenter		= NexObject(3, 6, "m3");
 	NexObject temphe				= NexObject(3, 7, "temphe");
 	NexObject tempbe				= NexObject(3, 8, "tempbe");
-	//NexObject heatbedenter	= NexObject(3, 12, "m4");
-	//NexObject hotendenter		= NexObject(3, 13, "m5");
 	NexObject chillenter		= NexObject(3, 12, "m5");
 	// 
 	// == 6
@@ -580,8 +589,6 @@
 	// wywo�ywana raz w lcdinit()
   void setpagePrinter() 
 	{
-    char temp[8] = { 0 };
-
     #if HOTENDS > 0
       Hotend00.setValue(0, "stat");
 			Hotend01.setValue(0, "stat");
@@ -1802,7 +1809,7 @@
     ZERO(bufferson);
 
 
-    if (PageID == StatusPage) // status page
+    if (PageID == EPageStatus) // status page
 		{
 			// if sprawdza czy nastapila zmiana pozycji aby nie spamowalo po serialu pozycja bez zmian -> todo: przeniesc na 8 bit...
 			if( current_position[X_AXIS] != temppos[X_AXIS] )
@@ -1821,7 +1828,7 @@
 				temppos[Z_AXIS] = current_position[Z_AXIS];
 			}
     }
-    else if (PageID == MovePage) // move page
+    else if (PageID == EPageMove) // move page
 		{
       if (axis_homed[X_AXIS]) {
         valuetemp = ftostr4sign(LOGICAL_X_POSITION(current_position[X_AXIS]));
@@ -1849,7 +1856,7 @@
 
       LedCoord5.setText(bufferson,"move");
     }
-    else if (PageID == BedLevelPage) // bed level page
+    else if (PageID == EPageBedlevel) // bed level page
 		{
       ProbeZ.setText(ftostr43sign(FIXFLOAT(LOGICAL_Z_POSITION(current_position[Z_AXIS]))),"bedlevel");
     }
@@ -1876,7 +1883,7 @@
 				SDstatus = SD_INSERT;
 				SD.setValue(SDstatus, "stat");
 				if (lcd_sd_status != 2) LCD_MESSAGEPGM(MSG_SD_INSERTED);			// MSG
-				if (PageID == SDPage){ setpageSD(); }													// ustaw strone i przekaz flage do strony status
+				if (PageID == EPageSD){ setpageSD(); }													// ustaw strone i przekaz flage do strony status
 			}
 			else																														// je�li SD_DETECT == true:
 			{
@@ -1885,7 +1892,7 @@
 				SDstatus = SD_NO_INSERT;
 				SD.setValue(SDstatus, "stat");
 				if (lcd_sd_status != 2) LCD_MESSAGEPGM(MSG_SD_REMOVED);				// MSG
-				if (PageID == SDPage){ setpageSD(); }		
+				if (PageID == EPageSD){ setpageSD(); }		
 			}
 			lcd_sd_status = sd_status;
 		} // CALY IF SPRAWDZA STAN SD_DETECT I JEGO ZMIANE: SD jest->init / SD niet->release
@@ -1955,8 +1962,8 @@
 
     switch(PageID)
 		{
-      case StatusPage: // status screen
-        if (PreviousPage != StatusPage) 
+      case EPageStatus: // status screen
+        if (PreviousPage != EPageStatus) 
 				{
 					lcd_setstatus(lcd_status_message);
           #if ENABLED(NEXTION_GFX)
@@ -2058,8 +2065,8 @@
         break;
 				
 			#if ENABLED(SDSUPPORT)
-      case SDPage: // sd card page
-					if (PreviousPage != SDPage){
+      case EPageSD: // sd card page
+					if (PreviousPage != EPageSD){
 						if(SDstatus == SD_PRINTING || SDstatus == SD_PAUSE)
 						{
 							// cos gdy drukuje
@@ -2072,26 +2079,26 @@
 					//nex_check_sdcard_present(); // sprawdz obecnosc karty sd, mount/unmount // potencjalnie tutaj jest bug z odswiezajacym sie ekranem SD 
           break;
 			#endif
-			case HeatingPage:
+			case EPageHeating:
 				nex_update_sd_status();
 				break;
-			case MaintainPage:
+			case EPageMaintain:
 				nex_update_sd_status();
 				break;
-			case SetupPage:
+			case EPageSetup:
 				nex_update_sd_status();
 				break;
-      case MovePage: // move page
+      case EPageMove: // move page
         coordtoLCD();
         break;
-      case SpeedPage: // speed page
+      case EPageSpeed: // speed page
         //Previousfeedrate = feedrate_percentage = (int)VSpeed.getValue("stat");
         break;
-			case FilamentPage:	// filament page
+			case EPageFilament:	// filament page
 				// odswiez temp glowicy na ekranie filament [przyciski]
 					degtoLCD(0, thermalManager.current_temperature[0]);
 				break;
-			case SelectPage: // select page
+			case EPageSelect: // select page
 				// pokaz temp glowicy podczas nagrzewania m600 na stronie select
 				if (nex_m600_heatingup == 1)
 				{
@@ -2107,10 +2114,10 @@
 					LcdRiga4.setText(temptemp);
 				}
 				break;
-      case BedLevelPage: // bedlevel
+      case EPageBedlevel: // bedlevel
         coordtoLCD();
         break;
-			case FlowPage: // flow page
+			case EPageFlow: // flow page
 				vFlowNex.setValue(flow_percentage[0], "flowpage");
 				break;
     }
@@ -2121,7 +2128,7 @@
     UNUSED(persist);
     if (lcd_status_message_level > 0 || !NextionON) return;
     strncpy(lcd_status_message, message, 24);
-    if (PageID == StatusPage) LcdStatus.setText(lcd_status_message);
+    if (PageID == EPageStatus) LcdStatus.setText(lcd_status_message);
   }
 
   void lcd_setstatusPGM(const char* message, int8_t level) {
@@ -2129,7 +2136,7 @@
     if (level < lcd_status_message_level || !NextionON) return;
     strncpy_P(lcd_status_message, message, 24);
     lcd_status_message_level = level;
-    if (PageID == StatusPage) LcdStatus.setText(lcd_status_message);
+    if (PageID == EPageStatus) LcdStatus.setText(lcd_status_message);
   }
 
   void lcd_status_printf_P(const uint8_t level, const char * const fmt, ...) {
