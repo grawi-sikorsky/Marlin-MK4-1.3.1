@@ -1973,6 +1973,16 @@
               gfx_clear(X_MAX_POS, Y_MAX_POS, Z_MAX_POS);
             #endif
           #endif
+
+					ZERO(bufferson);
+					strcat(bufferson, itostr3(progress_printing));
+					strcat(bufferson, " %");
+					percentdone.setText(bufferson, "stat");
+					progressbar.setValue(progress_printing, "stat"); // dodatkowo odswiez progressbar
+					if(SDstatus == SD_PRINTING || SDstatus == SD_PAUSE)
+					{
+						NexFilename.setText(filename_printing);
+					}
 				}
 				//fanek
          if (PreviousfanSpeed != fanSpeeds[0]) {
@@ -2015,8 +2025,8 @@
         coordtoLCD();
 				
 				if (PreviouspercentDone != progress_printing) {
-					// Progress bar solid part
-					progressbar.setValue(progress_printing,"stat");
+					progressbar.setValue(progress_printing,"stat");	// Progress bar
+
 					// Estimate End Time
 					ZERO(bufferson);
 					char buffer1[10];
@@ -2040,18 +2050,6 @@
 					strcat(bufferson, itostr3(progress_printing));
 					strcat(bufferson, " %");
 					percentdone.setText(bufferson, "stat");
-				}
-				else
-				{
-					ZERO(bufferson);
-					strcat(bufferson, itostr3(progress_printing));
-					strcat(bufferson, " %");
-					percentdone.setText(bufferson, "stat");
-					progressbar.setValue(progress_printing, "stat"); // dodatkowo odswiez progressbar
-					if(SDstatus == SD_PRINTING || SDstatus == SD_PAUSE)
-					{
-						NexFilename.setText(filename_printing);
-					}
 				}
 
 				nex_update_sd_status();
@@ -2102,13 +2100,13 @@
 				// pokaz temp glowicy podczas nagrzewania m600 na stronie select
 				if (nex_m600_heatingup == 1)
 				{
-					char *temp_he;
-					char *temp_te;
+					//char *temp_he;
+					//char *temp_te;
 					char temptemp[14];
 
-					temp_te = itostr3(thermalManager.target_temperature[0]);
-					temp_he = itostr3(thermalManager.current_temperature[0]);
-					strlcpy(temptemp,temp_he,4);
+					//temp_te = itostr3(thermalManager.target_temperature[0]);
+					//temp_he = itostr3(thermalManager.current_temperature[0]);
+					strlcpy(temptemp,itostr3(thermalManager.current_temperature[0]),4);
 					strcat_P(temptemp, PSTR(" / "));
 					strcat(temptemp, itostr3(thermalManager.target_temperature[0]));
 					LcdRiga4.setText(temptemp);
