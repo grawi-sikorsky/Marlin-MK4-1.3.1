@@ -35,7 +35,7 @@
   /**
    * Marlin release version identifier
    */
-  #define SHORT_BUILD_VERSION "1.3.1"
+  #define SHORT_BUILD_VERSION "1.3.1a"
   #define NAZWA_DRUKARKI "PrintO H3"
   #define COREXY_SPLASH "CoreXY Mechanics"
   /**
