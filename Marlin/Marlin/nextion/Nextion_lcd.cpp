@@ -1798,12 +1798,28 @@
 	// Wysyla koordynaty do do NEX / MOVE PAGE / STATUS / BEDLEVEL
   static void coordtoLCD() {
     char* valuetemp;
+		static float temppos[2];
     ZERO(bufferson);
+
+
     if (PageID == StatusPage) // status page
 		{
-      LcdX.setText(ftostr41sign(LOGICAL_X_POSITION(current_position[X_AXIS])),"stat");
-      LcdY.setText(ftostr41sign(LOGICAL_Y_POSITION(current_position[Y_AXIS])),"stat");
-      LcdZ.setText(ftostr41sign(FIXFLOAT(LOGICAL_Z_POSITION(current_position[Z_AXIS]))),"stat");
+			// if sprawdza czy nastapila zmiana pozycji aby nie spamowalo po serialu pozycja bez zmian -> todo: przeniesc na 8 bit...
+			if( current_position[X_AXIS] != temppos[X_AXIS] )
+			{
+				LcdX.setText(ftostr41sign(LOGICAL_X_POSITION(current_position[X_AXIS])),"stat");
+				temppos[X_AXIS] = current_position[X_AXIS];
+			}
+			if( current_position[Y_AXIS] != temppos[Y_AXIS] )
+			{
+				LcdY.setText(ftostr41sign(LOGICAL_Y_POSITION(current_position[Y_AXIS])),"stat");
+				temppos[Y_AXIS] = current_position[Y_AXIS];
+			}
+			if( current_position[Z_AXIS] != temppos[Z_AXIS] )
+			{
+				LcdZ.setText(ftostr41sign(LOGICAL_Z_POSITION(current_position[Z_AXIS])),"stat");
+				temppos[Z_AXIS] = current_position[Z_AXIS];
+			}
     }
     else if (PageID == MovePage) // move page
 		{
@@ -1857,7 +1873,6 @@
 			{
 				SERIAL_ECHOLNPGM("sd_status:false");
 				card.initsd();																								// inicjalizacja karty
-				//setpageSD();																									// ustaw strone i przekaz flage do strony status
 				SDstatus = SD_INSERT;
 				SD.setValue(SDstatus, "stat");
 				if (lcd_sd_status != 2) LCD_MESSAGEPGM(MSG_SD_INSERTED);			// MSG
@@ -1867,7 +1882,6 @@
 			{
 				SERIAL_ECHOLNPGM("sd_status:true");
 				card.release();																								// odmontuj kart� SD
-				//setpageSD();																									// ustaw strone i przekaz flage do strony status
 				SDstatus = SD_NO_INSERT;
 				SD.setValue(SDstatus, "stat");
 				if (lcd_sd_status != 2) LCD_MESSAGEPGM(MSG_SD_REMOVED);				// MSG
@@ -1935,6 +1949,7 @@
     if (!NextionON) return;
 	
     PageID = Nextion_PageID();
+		if(PageID == 100 || PageID == 101)	PageID = PreviousPage;		// jesli na serialu lipa (przyczyna?) to loop do nastepnej proby
 
 		nex_check_sdcard_present();	// sprawdz obecnosc karty sd, mount/unmount // potencjalnie tutaj jest bug z odswiezajacym sie ekranem SD 
 
