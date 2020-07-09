@@ -1946,10 +1946,10 @@
   void nextion_draw_update() {
 
     static uint8_t  PreviousPage = 0,
-                    Previousfeedrate = 0,
                     PreviousfanSpeed = 0,
 										Previousflow = 0,
                     PreviouspercentDone = 0;
+		static int16_t 	Previousfeedrate = 0;
     static float    PreviousdegHeater[1] = { 0.0 },
                     PrevioustargetdegHeater[1] = { 0.0 };
 

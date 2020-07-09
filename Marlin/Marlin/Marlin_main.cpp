@@ -1224,7 +1224,7 @@ inline void get_serial_commands() {
     if (commands_in_queue == 0) stop_buffering = false;
 
     uint16_t sd_count = 0;
-	uint16_t sd_count_value = 0; // dodane
+	  uint16_t sd_count_value = 0; // dodane
 
 
     bool card_eof = card.eof();
@@ -7517,6 +7517,9 @@ inline void gcode_M109() {
       now = millis();
       if (ELAPSED(now, next_temp_ms)) { //Print Temp Reading every 1 second while heating up.
         next_temp_ms = now + 1000UL;
+        //SERIAL_ECHO("fabs:");
+        //SERIAL_ECHOLN(FABS(target_temp - thermalManager.degBed()));
+
         print_heaterstates();
         #if TEMP_BED_RESIDENCY_TIME > 0
           SERIAL_PROTOCOLPGM(" W:");
@@ -13280,7 +13283,7 @@ void ploss_recover(uint8_t automatic) {
 */
 void recover_machine_state_after_power_panic()
 {
-	char cmd[30]; // moze da sie zmniejszyc? 30 znakow dla ustawienia G92 E to chyba za duzo..
+	//char cmd[30]; // moze da sie zmniejszyc? 30 znakow dla ustawienia G92 E to chyba za duzo..
 	// Przywroc pozycje sprzed zaniku na dane zapisane w eepromie
 	current_position[X_AXIS] = eeprom_read_float((float*)EEPROM_PANIC_CURRENT_XPOS);
 	current_position[Y_AXIS] = eeprom_read_float((float*)EEPROM_PANIC_CURRENT_YPOS);
