@@ -1085,7 +1085,7 @@
 // M100 Free Memory Watcher
 //
 #define M100_FREE_MEMORY_WATCHER // uncomment to add the M100 Free Memory Watcher for debug purpose
-
+// musi byc zdef bo lipa z temperatura
 //
 // G20/G21 Inch mode support
 //
