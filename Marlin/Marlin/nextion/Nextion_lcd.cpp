@@ -1535,6 +1535,24 @@
 		{
 			enqueue_and_echo_command(bufferson);
 		}
+		else if(strcmp(bufferson, "G29 S1") == 0) // musimy wylapac komende z nextiona zanim trafi do parsera
+		{																					// inaczej trzeba bedzie miec osobne wsady do NEXa z auto i semi levelingiem
+			#if ENABLED(NEXTION_SEMIAUTO_BED_LEVEL)
+				enqueue_and_echo_command(bufferson);
+				Pprobe.show();		// pokaz ekran semiauto leveling
+			#endif
+			
+			#if ENABLED(NEXTION_AUTO_BED_LEVEL)
+				enqueue_and_echo_command("G28");	// bazowanie przed poziomowaniem
+				enqueue_and_echo_command("G29");	// poziomowanie auto
+				Palevel.show();										// pokaz ekran auto leveling
+				// to do: g28 after auto leveling
+			#endif
+
+			#if ENABLED(NEX_SCREENSAVER)
+				if(nex_ss_state == true) nex_ss_state != nex_ss_state; // jeśli ON -> OFF screensaver
+			#endif
+		}
 		else
 		{ 
 			enqueue_and_echo_command(bufferson);

@@ -158,6 +158,7 @@
 #ifdef PRINTO_H3_BIGGIE
 	#define MACHINE_NAME "Printo H3 Ex"
 	#define CUSTOM_MACHINE_NAME "Printo H3 Ex"
+  #define NEXTION_SEMIAUTO_BED_LEVEL
 #endif
 #ifdef PRINTO_H3_MIDI
 #define MACHINE_NAME "Printo H3 Midi"
