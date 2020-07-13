@@ -628,6 +628,58 @@
 
   #endif  // SDSUPPORT
 
+  //bool getConnect(char* buffer) { 
+  bool getConnect() { 
+    delayMicroseconds(100);
+    sendCommand("");
+    delay(100);
+    sendCommand("connect");
+    delay(20);
+
+	  //uint8_t   c = 0;
+	  //String temp = String("");    //    <<< ==== <<< JEBANY BUUUUUUG z memory corruption!!!!! nextion + niekoniecznie.....
+    uint8_t c = 0;
+    char a[1];
+    char temp[80];
+
+    ZERO(temp);
+    ZERO(a);
+
+	#if ENABLED(NEXTION_CONNECT_DEBUG)
+	  SERIAL_MSG(" NEXTION Debug Connect receveid:");
+	#endif
+
+	  //while 
+    while(nexSerial.available()) {
+		  c = nexSerial.read();
+			#if ENABLED(NEXTION_CONNECT_DEBUG)
+			SERIAL_CHR((char)c);
+			#endif
+      SERIAL_ECHOPGM("c:");
+      SERIAL_ECHOLN(c);
+
+      a[0] = (char)c;
+      SERIAL_ECHOPGM("a:");
+      SERIAL_ECHOLN(a[0]);
+
+      strncat(temp, a, 1);
+      SERIAL_ECHOPGM("temp:");
+      SERIAL_ECHOLN(temp);
+		  //temp += (char)c;
+	  }
+	#if ENABLED(NEXTION_CONNECT_DEBUG)
+		SERIAL_EOL();
+	#endif
+
+	if (strstr(temp, "comok")) return true;
+
+	return false;
+  }
+
+  /**************************************************
+   * STARY GETCONNECT ZE STRINGIEM
+   * ************************************************
+   
   bool getConnect(char* buffer) {
     delayMicroseconds(100);
     sendCommand("");
@@ -660,19 +712,23 @@
 	return false;
   }
 
+  */
+
   //
   // PUBBLIC FUNCTION
   //
 
-  bool nexInit(char *buffer) {
-	  SERIAL_ECHOLNPGM("nex_init");
+  //bool nexInit(char *buffer) {
+  bool nexInit() {
     // Try default baudrate
     nexSerial.begin(9600);
+    //ZERO(buffer);
 
-    ZERO(buffer);
-	SERIAL_ECHOLNPGM("-> getConnect");
-    bool connect = getConnect(buffer);
-	SERIAL_ECHOLNPGM("getConnect ->");
+	  //SERIAL_ECHOLNPGM("-> getConnect");
+    //bool connect = getConnect(buffer);
+    bool connect = getConnect();
+
+	  //SERIAL_ECHOLNPGM("getConnect ->");
     // If baudrate is 9600 set to 115200 and reconnect
     if (connect) {
 			SERIAL_ECHOLNPGM("9600 OK -> TRY 115");
@@ -686,13 +742,43 @@
     else { // Else try to 115200 baudrate
 			SERIAL_ECHOLNPGM("9600 FAIL -> TRY 115");
       nexSerial.end();
-	  delay(1000);
+	    delay(1000);
+      nexSerial.begin(115200);
+      //connect = getConnect(buffer);
+      connect = getConnect();
+      if (connect) return true;
+    }
+    return false;
+  }
+  /**************************************
+   * STARY NEX INIT ZE STRINGIEM
+   * ************************************
+  bool nexInit(char *buffer) {
+    // Try default baudrate
+    nexSerial.begin(9600);
+    ZERO(buffer);
+
+    bool connect = getConnect(buffer);
+
+    // If baudrate is 9600 set to 115200 and reconnect
+    if (connect) {
+      sendCommand("baud=115200");
+      nexSerial.end();
+      delay(1000);
+      nexSerial.begin(115200);
+			if (connect) return true;
+      //return true;
+    }
+    else { // Else try to 115200 baudrate
+      nexSerial.end();
+	    delay(1000);
       nexSerial.begin(115200);
       connect = getConnect(buffer);
       if (connect) return true;
     }
     return false;
   }
+  */
   
   void nexLoop(NexObject *nex_listen_list[]) {
     static uint8_t __buffer[10];

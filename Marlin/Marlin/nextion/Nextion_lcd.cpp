@@ -48,13 +48,13 @@
 	uint8_t 		lcd_sd_status;
 
   uint16_t    slidermaxval              = 20;
-  char        bufferson[70]             = { 0 };
+  char        bufferson[60]             = { 0 };
   char        lcd_status_message[24]    = WELCOME_MSG;
   const float manual_feedrate_mm_m[]    = MANUAL_FEEDRATE;
 	millis_t		screen_timeout_millis;
-	int		nex_file_number[6];
-	int 	nex_file_row_clicked;
-	char	filename_printing[40];
+	uint8_t			nex_file_number[6];
+	uint8_t		 	nex_file_row_clicked = 0;
+	char	filename_printing[34];
 
 	extern bool nex_filament_runout_sensor_flag;
   extern uint8_t progress_printing;
@@ -376,7 +376,7 @@
 	*******************************************************************
 	*/
 	//NexObject SvJerk				= NexObject(17, 4, "m2"); //wejscie w jerk -> przekazuje zmienne float na nuber nextion (brak dziesietnych)
-	NexObject SvSteps				= NexObject(17, 5, "m3");	//wejscie w steps -> przekazuje zmienne float na nuber nextion (brak dziesietnych)
+	//NexObject SvSteps				= NexObject(17, 5, "m3");	//wejscie w steps -> przekazuje zmienne float na nuber nextion (brak dziesietnych)
 	// 
 
 	/**
@@ -471,7 +471,7 @@
 		&FanSetBtn,
 
 		//Page 22 service
-		&SvSteps,
+		//&SvSteps,
 
 		// Page 28 babystep
 		&ZbabyUp, &ZbabyDown, &ZbabyBack_Save,
@@ -579,7 +579,7 @@
 		thermalManager.disable_all_heaters();		// wylacz grzalki raz jeszcze bo z reguly wskakuje jeszcze glowica
 		nex_update_sd_status();
 		Pprinter.show(); // ma odswiezyc zakladki na ektranie statusu po zakonczeniu/zatrzymaniu druku
-		sendCommand("ref 0");
+		//sendCommand("ref 0");
 	}
 
   //void menu_action_back() { Pprinter.show(); }
@@ -800,7 +800,7 @@
           } else {
 						#if ENABLED(NEXTION_SD_LONG_NAMES)
 							printrowsd(row, false, "", "");
-							nex_file_number[row] = NULL; // nie mozna wyzerowac (bo bedzie w wolnych polach wszezie plik nr: 0 czyli jakiś) może tu być potencjalny bug.
+							//nex_file_number[row] = NULL; // nie mozna wyzerowac (bo bedzie w wolnych polach wszezie plik nr: 0 czyli jakiś) może tu być potencjalny bug.
 						#else
 							printrowsd(row, false, "");
 							nex_file_number[row] = NULL; // nie mozna wyzerowac (bo bedzie w wolnych polach wszezie plik nr: 0 czyli jakiś) może tu być potencjalny bug.
@@ -837,7 +837,7 @@
       card.openAndPrintFile(filename);
 
 			card.getfilename(nex_file_number[nex_file_row_clicked]);
-			strncpy(filename_printing, card.longFilename, 40); // card.longFilename
+			strlcpy(filename_printing, card.longFilename, sizeof(filename_printing)-1); // card.longFilename
 
       Pprinter.show();
 			sendCommand("ref 0");
@@ -1323,7 +1323,7 @@
         stepper.synchronize();
       }
       else if (ptr == &ProbeSend) {
-				SERIAL_ECHOLNPGM("probesend:");
+				//SERIAL_ECHOLNPGM("probesend:");
         #if HAS_LEVELING && ENABLED(NEXTION_BED_LEVEL)
 				if (g29_in_progress == true) {
 					enqueue_and_echo_commands_P(PSTR("G29 S2")); 
@@ -1454,7 +1454,7 @@
 			Atravel.setValue(planner.max_jerk[Z_AXIS],"accelpage"); //va2
 			Amaxx.setValue(planner.max_jerk[E_AXIS],"accelpage");	//va3
 	}
-
+	#if ENABLED(NEXTION_STEP_SETTINGS)
 	void setstepspagePopCallback(void *ptr)
 	{
 			UNUSED(ptr);
@@ -1463,17 +1463,18 @@
 			Atravel.setValue(planner.axis_steps_per_mm[Z_AXIS], "accelpage");	//va2
 			Amaxx.setValue(planner.axis_steps_per_mm[E_AXIS+active_extruder], "accelpage");	//va3
 	}
+	#endif
 #endif
 	void setaccelsavebtnPopCallback(void *ptr)
 	{
 		settings.save();
-		SERIAL_ECHOPGM("zapisane");
+		//SERIAL_ECHOPGM("zapisane");
 		buzzer.tone(100, 2300);
 	}
 	void setaccelloadbtnPopCallback(void *ptr)
 	{
 		settings.load();
-		SERIAL_ECHOPGM("zaladowane");
+		//SERIAL_ECHOPGM("zaladowane");
 		buzzer.tone(100, 2300);
 	}
 
@@ -1650,10 +1651,11 @@
 // ==	LCD INIT					==
 // =======================
   void lcd_init() {
-    for (uint8_t i = 0; i < 10; i++) {
-      ZERO(bufferson);
-      NextionON = nexInit(bufferson);
-      if (NextionON) break;
+    for (uint8_t i = 0; i < 3; i++) {
+      //ZERO(bufferson);
+      //NextionON = nexInit(bufferson);
+			NextionON = nexInit();
+      if (NextionON) break; 
       delay(20);
     }
 
@@ -1667,7 +1669,7 @@
 		#endif
 
     if (!NextionON) {
-	  SERIAL_ECHOPGM("Nextion not connected!");
+	  SERIAL_ECHOLNPGM("Nextion not connected!");
       return;
     }
     else {
@@ -1747,7 +1749,7 @@
 				Aload.attachPop(setaccelloadbtnPopCallback);
 			#endif
 
-			SvSteps.attachPop(setstepspagePopCallback);
+			//SvSteps.attachPop(setstepspagePopCallback);
 
 			// TEMPERATURA
 			heatupenter.attachPop(sethotPopCallback, &heatupenter); // obsluga przycisku rozgrzej oba
@@ -1893,7 +1895,7 @@
 		const bool sd_status = IS_SD_INSERTED;
 		if (sd_status != lcd_sd_status && lcd_detected())								// sprawdz czy nastapila zmiana? SD DET ->
 		{																																// TAK:
-			SERIAL_ECHOLNPGM("zmiana sd det:");
+			//SERIAL_ECHOLNPGM("zmiana sd det:");
 			if (!sd_status)																									// je�li SD_DETECT == false:
 			{
 				SERIAL_ECHOLNPGM("sd_status:false");
@@ -2143,14 +2145,14 @@
   void lcd_setstatus(const char* message, bool persist) {
     UNUSED(persist);
     if (lcd_status_message_level > 0 || !NextionON) return;
-    strncpy(lcd_status_message, message, 24);
+    strlcpy(lcd_status_message, message, sizeof(lcd_status_message)-1);
     if (PageID == EPageStatus) LcdStatus.setText(lcd_status_message);
   }
 
   void lcd_setstatusPGM(const char* message, int8_t level) {
     if (level < 0) level = lcd_status_message_level = 0;
     if (level < lcd_status_message_level || !NextionON) return;
-    strncpy_P(lcd_status_message, message, 24);
+    strncpy_P(lcd_status_message, message, sizeof(lcd_status_message)-1);
     lcd_status_message_level = level;
     if (PageID == EPageStatus) LcdStatus.setText(lcd_status_message);
   }

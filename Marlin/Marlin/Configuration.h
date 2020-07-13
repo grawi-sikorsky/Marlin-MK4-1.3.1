@@ -1720,7 +1720,7 @@
 
 //#define PRINTOH3_SPEAKER_SOUNDS //sd in out beeper sounds and more..
 
-#if defined(PRINTO_H3_PLUS) || defined(PRINTO_H3_TOWERPLUS) || defined(PRINTO_H3_BIGGIE)
+#if defined(PRINTO_H3_PLUS) || defined(PRINTO_H3_TOWERPLUS) //|| defined(PRINTO_H3_BIGGIE)
 	#define PLOSS_SUPPORT
 	#define PLOSS_MANUAL_RECOVERY
 #endif
@@ -1773,7 +1773,7 @@
 	#define NEXTION_SD_LONG_NAMES
 	#define NEX_STAT_PAGE
 	#define NEX_ACC_PAGE
-	#define NEXTION_STEP_SETTINGS
+	//#define NEXTION_STEP_SETTINGS
 	#define NEXTION_JERK_SETTINGS
 
 // BED LEVELING NEXTION

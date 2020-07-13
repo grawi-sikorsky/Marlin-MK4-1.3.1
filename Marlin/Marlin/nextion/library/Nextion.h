@@ -475,8 +475,8 @@ class NexObject {
  * 
  * @return true if success, false for failure. 
  */
-bool nexInit(char *buffer);
-
+//bool nexInit(char *buffer);
+bool nexInit();
 /**
  * Listen touch event and calling callbacks attached before.
  *
