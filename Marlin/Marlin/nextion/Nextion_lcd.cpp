@@ -54,7 +54,7 @@
 	millis_t		screen_timeout_millis;
 	uint8_t			nex_file_number[6];
 	uint8_t		 	nex_file_row_clicked = 0;
-	char	filename_printing[34];
+	//char	filename_printing[34];
 
 	extern bool nex_filament_runout_sensor_flag;
   extern uint8_t progress_printing;
@@ -183,7 +183,7 @@
   NexObject progressbar			= NexObject(1, 22,  "j0");
   NexObject Wavetemp				= NexObject(1, 23,  "s0");
 	NexObject percentdone			= NexObject(1, 43,	"t4");
-	NexObject NexFilename			= NexObject(1, 55,	"t2");
+	//NexObject NexFilename			= NexObject(1, 55,	"t2");
 	//
 	// == 18
 	// == 29
@@ -405,9 +405,9 @@
 	* NEX komponenty strona:: FLOWPAGE 21
 	*******************************************************************
 	*/
-	NexObject vFlowNex					= NexObject(21, 7, "vflow");
-	NexObject SetFlowBtn				= NexObject(21, 9, "m0");
-	NexObject FlowPageFrom			= NexObject(21, 10, "flowfrom");
+	//NexObject vFlowNex					= NexObject(21, 7, "vflow");
+	//NexObject SetFlowBtn				= NexObject(21, 9, "m0");
+	//NexObject FlowPageFrom			= NexObject(21, 10, "flowfrom");
 	// 
 	// == 3
 
@@ -477,7 +477,7 @@
 		&ZbabyUp, &ZbabyDown, &ZbabyBack_Save,
 
 		// Page 31 Flow
-		&SetFlowBtn,
+		//&SetFlowBtn,
 
     NULL
   };
@@ -837,7 +837,7 @@
       card.openAndPrintFile(filename);
 
 			card.getfilename(nex_file_number[nex_file_row_clicked]);
-			strlcpy(filename_printing, card.longFilename, sizeof(filename_printing)-1); // card.longFilename
+			//strlcpy(filename_printing, card.longFilename, sizeof(filename_printing)-1); // card.longFilename
 
       Pprinter.show();
 			sendCommand("ref 0");
@@ -1447,12 +1447,13 @@
 		planner.max_acceleration_mm_per_s2[E_AXIS + active_extruder] = Amaxe.getValue("accelpage");
 	}
 	void setjerkpagePopCallback(void *ptr)
-	{
+	{ /*
 			UNUSED(ptr);
 			Awork.setValue(planner.max_jerk[X_AXIS], "accelpage"); //va0
 			Aretr.setValue(planner.max_jerk[Y_AXIS], "accelpage");	//va1
 			Atravel.setValue(planner.max_jerk[Z_AXIS],"accelpage"); //va2
 			Amaxx.setValue(planner.max_jerk[E_AXIS],"accelpage");	//va3
+			*/
 	}
 	#if ENABLED(NEXTION_STEP_SETTINGS)
 	void setstepspagePopCallback(void *ptr)
@@ -1500,6 +1501,7 @@
 		Pprinter.show();
 		buzzer.tone(100, 2300);
 	}
+	/*
 	void setflowPopCallback(void *ptr)
 	{
 		uint8_t flowfrom;
@@ -1519,7 +1521,7 @@
 			Poptions.show();
 		}
 		buzzer.tone(100, 2300);
-	}
+	}*/
 
   void setgcodePopCallback(void *ptr) {
     UNUSED(ptr);
@@ -1759,7 +1761,7 @@
 
 			speedsetbtn.attachPop(setspeedPopCallback); //obsluga przycisku speed set
 
-			SetFlowBtn.attachPop(setflowPopCallback); //obsluga przycisku set flow
+			//SetFlowBtn.attachPop(setflowPopCallback); //obsluga przycisku set flow
 
 			// BABYSTEP
 			ZbabyUp.attachPush(setBabystepUpPopCallback);	// obsluga przycisku babystep up
@@ -2001,7 +2003,7 @@
 					progressbar.setValue(progress_printing, "stat"); // dodatkowo odswiez progressbar
 					if(SDstatus == SD_PRINTING || SDstatus == SD_PAUSE)
 					{
-						NexFilename.setText(filename_printing);
+					//NexFilename.setText(filename_printing);
 					}
 				}
 				//fanek
@@ -2015,10 +2017,11 @@
           Previousfeedrate = feedrate_percentage;
         }
 				//flow
+				/*
 				if (Previousflow != flow_percentage[0]) {
 					vFlowNex.setValue(flow_percentage[0], "flowpage");
 					Previousflow = flow_percentage[0];
-				}
+				}*/
         #if HAS_TEMP_0
           if (PreviousdegHeater[0] != thermalManager.current_temperature[0]) 
 					{
@@ -2136,7 +2139,7 @@
         coordtoLCD();
         break;
 			case EPageFlow: // flow page
-				vFlowNex.setValue(flow_percentage[0], "flowpage");
+				//vFlowNex.setValue(flow_percentage[0], "flowpage");
 				break;
     }
     PreviousPage = PageID;

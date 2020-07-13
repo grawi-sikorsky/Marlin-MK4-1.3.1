@@ -655,22 +655,22 @@
 			#if ENABLED(NEXTION_CONNECT_DEBUG)
 			SERIAL_CHR((char)c);
 			#endif
-      SERIAL_ECHOPGM("c:");
-      SERIAL_ECHOLN(c);
+      //SERIAL_ECHOPGM("c:");
+      //SERIAL_ECHOLN(c);
 
       a[0] = (char)c;
-      SERIAL_ECHOPGM("a:");
-      SERIAL_ECHOLN(a[0]);
+      //SERIAL_ECHOPGM("a:");
+      //SERIAL_ECHOLN(a[0]);
 
       strncat(temp, a, 1);
-      SERIAL_ECHOPGM("temp:");
-      SERIAL_ECHOLN(temp);
+      //SERIAL_ECHOPGM("temp:");
+      //SERIAL_ECHOLN(temp);
 		  //temp += (char)c;
 	  }
 	#if ENABLED(NEXTION_CONNECT_DEBUG)
 		SERIAL_EOL();
 	#endif
-
+  //SERIAL_ECHOLN(temp);
 	if (strstr(temp, "comok")) return true;
 
 	return false;
