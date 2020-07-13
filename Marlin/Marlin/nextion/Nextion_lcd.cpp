@@ -242,17 +242,17 @@
    * NEX komponenty strona: MOVE 6
    *******************************************************************
    */
-  NexObject XYHome      = NexObject(6,   2, "p4");
+  //NexObject XYHome      = NexObject(6,   2, "p4");
   NexObject XYUp        = NexObject(6,   3, "p5");
   NexObject XYRight     = NexObject(6,   4, "p6");
   NexObject XYDown      = NexObject(6,   5, "p7");
   NexObject XYLeft      = NexObject(6,   6, "p8");
-  NexObject ZHome       = NexObject(6,   7, "p9");
+  //NexObject ZHome       = NexObject(6,   7, "p9");
   NexObject ZUp         = NexObject(6,   8, "p10");
   NexObject ZDown       = NexObject(6,   9, "p11");
   NexObject movecmd     = NexObject(6,  11, "vacmd");
   NexObject LedCoord5   = NexObject(6,  12, "t0");
-  NexObject MotorOff    = NexObject(6,  17, "p0");
+  //NexObject MotorOff    = NexObject(6,  17, "p0");
   NexObject Extrude     = NexObject(6,  19, "p12");	
   NexObject Retract     = NexObject(6,  20, "p14");
 	// 
@@ -443,8 +443,8 @@
 		#endif
 
     // Page 5 touch listen
-    &MotorOff, &XYHome, &XYUp, &XYRight, &XYDown, &XYLeft,
-    &ZHome, &ZUp, &ZDown,
+    &XYUp, &XYRight, &XYDown, &XYLeft,
+    &ZUp, &ZDown,
     &Extrude, &Retract,
 
 		&speedsetbtn,
@@ -1571,11 +1571,11 @@
 		enqueue_and_echo_command(bufferson);
 		enqueue_and_echo_commands_P(PSTR("G90"));
   }
-
+	/*
   void motoroffPopCallback(void *ptr) {
     UNUSED(ptr);
 		enqueue_and_echo_commands_P(PSTR("M84"));
-  }
+  }*/
 
 	// NEXTION: Obsluga klikniecia przycisku SEND na SELECT PAGE
   void sendPopCallback(void *ptr) {
@@ -1676,39 +1676,7 @@
     }
     else {
 		SERIAL_ECHO_START();
-	  SERIAL_ECHOPGM("Nextion");
-
-    if (strstr(bufferson, "3224")) {       // Model 2.4" or 2.8" Normal or Enhanced
-			SERIAL_ECHOPGM(" 2.4");
-        #if ENABLED(NEXTION_GFX)
-          gfx.set_position(1, 24, 250, 155);
-        #endif
-      }
-    else if (strstr(bufferson, "4024")) {  // Model 3.2" Normal or Enhanced
-			SERIAL_ECHOPGM(" 3.2");
-       #if ENABLED(NEXTION_GFX)
-          gfx.set_position(1, 24, 250, 155);
-       #endif
-      }
-		else if (strstr(bufferson, "4832")) {  // Model 3.2" Normal or Enhanced
-			SERIAL_ECHOPGM(" 3.5");
-			#if ENABLED(NEXTION_GFX)
-				gfx.set_position(1, 24, 250, 155);
-			#endif
-			}
-    else if (strstr(bufferson, "4827")) {  // Model 4.3" Normal or Enhanced
-			SERIAL_ECHOPGM(" 4.3");
-      #if ENABLED(NEXTION_GFX)
-          gfx.set_position(1, 24, 250, 155);
-      #endif
-      }
-    else if (strstr(bufferson, "8048")) {  // Model 7" Normal or Enhanced
-			SERIAL_ECHOPGM(" 7");
-      #if ENABLED(NEXTION_GFX)
-          gfx.set_position(274, 213, 250, 155);
-      #endif
-      }
-	  SERIAL_CHAR('"'); SERIAL_ECHOLNPGM(" connected!");
+	  SERIAL_ECHOLNPGM("Nextion connected!");
 
       #if ENABLED(NEXTION_GFX)
         gfx.color_set(NX_AXIS + X_AXIS, 63488);
@@ -1769,17 +1737,17 @@
 			ZbabyBack_Save.attachPop(setBabystepEEPROMPopCallback);
 			
 			// MOVE PAGE
-      XYHome.attachPop(setmovePopCallback);
+      //XYHome.attachPop(setmovePopCallback);
 			XYUp.attachPush(setmovePopCallback);
       XYRight.attachPush(setmovePopCallback);
       XYDown.attachPush(setmovePopCallback);
       XYLeft.attachPush(setmovePopCallback);
-      ZHome.attachPop(setmovePopCallback);
+      //ZHome.attachPop(setmovePopCallback);
       ZUp.attachPush(setmovePopCallback);
       ZDown.attachPush(setmovePopCallback);
       Extrude.attachPush(setmovePopCallback);
       Retract.attachPush(setmovePopCallback);
-      MotorOff.attachPop(motoroffPopCallback);
+      //MotorOff.attachPop(motoroffPopCallback);
 
 			// GCODE
       Send.attachPop(setgcodePopCallback);
