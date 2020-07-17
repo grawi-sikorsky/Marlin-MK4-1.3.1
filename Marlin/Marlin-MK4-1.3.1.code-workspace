@@ -3,6 +3,10 @@
 		{
 			"name": "Marlin",
 			"path": "."
+		},
+		{
+			"name": "BME280-328p",
+			"path": "..\\..\\BME280-328p\\BME280-328p"
 		}
 	],
 	"settings": {

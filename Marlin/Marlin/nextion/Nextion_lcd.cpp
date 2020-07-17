@@ -46,21 +46,24 @@
   uint8_t     PageID                    = 0,
               lcd_status_message_level  = 0;
 	uint8_t 		lcd_sd_status;
+	uint8_t			nex_file_number[6];
+	uint8_t		 	nex_file_row_clicked = 0;
 
   uint16_t    slidermaxval              = 20;
   char        bufferson[60]             = { 0 };
   char        lcd_status_message[24]    = WELCOME_MSG;
-  const float manual_feedrate_mm_m[]    = MANUAL_FEEDRATE;
 	millis_t		screen_timeout_millis;
-	uint8_t			nex_file_number[6];
-	uint8_t		 	nex_file_row_clicked = 0;
+
 	//char	filename_printing[34];
 
-	extern bool nex_filament_runout_sensor_flag;
-  extern uint8_t progress_printing;
+	#if ENABLED(NEXTION_SEMIAUTO_BED_LEVEL)
+  	const float manual_feedrate_mm_m[]    = MANUAL_FEEDRATE; // zmienna wylacznie do przepisania definicji MANUAL FEEDRATE a potem przerzucenia do float feedrate_mm_s
+	#endif
 
-	extern float destination[XYZE];// = { 0.0 };
+	extern bool nex_filament_runout_sensor_flag;
 	extern bool g29_in_progress;// = false;
+  extern uint8_t progress_printing;
+	extern float destination[XYZE];// = { 0.0 };
 
 	extern inline void set_current_to_destination() { COPY(current_position, destination); }
 	extern inline void set_destination_to_current() { COPY(destination, current_position); }
@@ -2091,12 +2094,8 @@
 				// pokaz temp glowicy podczas nagrzewania m600 na stronie select
 				if (nex_m600_heatingup == 1)
 				{
-					//char *temp_he;
-					//char *temp_te;
 					char temptemp[14];
 
-					//temp_te = itostr3(thermalManager.target_temperature[0]);
-					//temp_he = itostr3(thermalManager.current_temperature[0]);
 					strlcpy(temptemp,itostr3(thermalManager.current_temperature[0]),4);
 					strcat_P(temptemp, PSTR(" / "));
 					strcat(temptemp, itostr3(thermalManager.target_temperature[0]));
