@@ -129,8 +129,8 @@
 //#define PRINTO_H3_PLUS
 //#define PRINTO_H3_TOWER
 //#define PRINTO_H3_TOWERPLUS
-#define PRINTO_H3_BIGGIE
-//#define PRINTO_H3_MIDI
+//#define PRINTO_H3_BIGGIE
+#define PRINTO_H3_MIDI
 //lcd 3.0
 // ============================================
 // WYBOR DRUKARKI NASTEPUJE TUTAJ W TORONTO!
@@ -142,18 +142,22 @@
 #ifdef PRINTO_H3
 	#define MACHINE_NAME "Printo H3"
 	#define CUSTOM_MACHINE_NAME "Printo H3"
+  #define NEXTION_SEMIAUTO_BED_LEVEL
 #endif
 #ifdef PRINTO_H3_PLUS
 	#define MACHINE_NAME "Printo H3+"
 	#define CUSTOM_MACHINE_NAME "Printo H3+"
+  #define NEXTION_SEMIAUTO_BED_LEVEL
 #endif
 #ifdef PRINTO_H3_TOWER
 	#define MACHINE_NAME "Printo H3 Tower"
 	#define CUSTOM_MACHINE_NAME "Printo H3 Tower"
+  #define NEXTION_SEMIAUTO_BED_LEVEL
 #endif
 #ifdef PRINTO_H3_TOWERPLUS
 	#define MACHINE_NAME "Printo H3+ Tower"
 	#define CUSTOM_MACHINE_NAME "Printo H3+ Tower"
+  #define NEXTION_SEMIAUTO_BED_LEVEL
 #endif
 #ifdef PRINTO_H3_BIGGIE
 	#define MACHINE_NAME "Printo H3 Ex"
@@ -161,8 +165,9 @@
   #define NEXTION_SEMIAUTO_BED_LEVEL
 #endif
 #ifdef PRINTO_H3_MIDI
-#define MACHINE_NAME "Printo H3 Midi"
-#define CUSTOM_MACHINE_NAME "Printo H3 Midi"
+  #define MACHINE_NAME "Printo H3 Midi"
+  #define CUSTOM_MACHINE_NAME "Printo H3 Midi"
+  #define NEXTION_SEMIAUTO_BED_LEVEL
 #endif
 
 
