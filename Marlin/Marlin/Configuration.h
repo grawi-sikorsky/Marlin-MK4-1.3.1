@@ -126,11 +126,11 @@
 // ============================================
 
 //#define PRINTO_H3
-//#define PRINTO_H3_PLUS
+#define PRINTO_H3_PLUS
 //#define PRINTO_H3_TOWER
 //#define PRINTO_H3_TOWERPLUS
 //#define PRINTO_H3_BIGGIE
-#define PRINTO_H3_MIDI
+//#define PRINTO_H3_MIDI
 //lcd 3.0
 // ============================================
 // WYBOR DRUKARKI NASTEPUJE TUTAJ W TORONTO!
@@ -1090,7 +1090,7 @@
 //
 // M100 Free Memory Watcher
 //
-//#define M100_FREE_MEMORY_WATCHER // uncomment to add the M100 Free Memory Watcher for debug purpose
+#define M100_FREE_MEMORY_WATCHER // uncomment to add the M100 Free Memory Watcher for debug purpose
 // musi byc zdef bo lipa z temperatura
 //
 // G20/G21 Inch mode support
