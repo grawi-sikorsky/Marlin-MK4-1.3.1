@@ -10521,8 +10521,8 @@ void process_next_command() {
     SERIAL_ECHO_START();
     SERIAL_ECHOLN(current_command);
     #if ENABLED(M100_FREE_MEMORY_WATCHER)
-      SERIAL_ECHOPAIR("slot:", cmd_queue_index_r);
-      M100_dump_routine("   Command Queue:", (const char*)command_queue, (const char*)(command_queue + sizeof(command_queue)));
+      //SERIAL_ECHOPAIR("slot:", cmd_queue_index_r);
+      //M100_dump_routine("   Command Queue:", (const char*)command_queue, (const char*)(command_queue + sizeof(command_queue)));
     #endif
   }
 
