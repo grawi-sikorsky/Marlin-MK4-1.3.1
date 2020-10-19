@@ -389,8 +389,8 @@
 	NexObject Amaxz			= NexObject(23, 27, "a5");
 	NexObject Amaxe			= NexObject(23, 28, "a6");
 	NexObject Asend			= NexObject(23, 33, "p12"); 
-	NexObject Asave			= NexObject(23, 30, "p10");	// setaccelsavebtnPopCallback -> wywo³uje settings.save();
-	NexObject Aload			= NexObject(23, 31, "p11"); // setaccelloadbtnPopCallback	-> wywo³uje settings.load();
+	NexObject Asave			= NexObject(23, 30, "p10");	// setaccelsavebtnPopCallback -> wywoï¿½uje settings.save();
+	NexObject Aload			= NexObject(23, 31, "p11"); // setaccelloadbtnPopCallback	-> wywoï¿½uje settings.load();
 #endif
 	// 
 	// == 11
@@ -427,7 +427,7 @@
 	// 
 	// == 3
 	// == 132
-	// 132*13 = 1716 bajtów
+	// 132*13 = 1716 bajtï¿½w
 
   NexObject *nex_listen_list[] =
   {
@@ -588,7 +588,7 @@
   void menu_action_function(screenFunc_t func) { (*func)(); }
 
 	// Ustawia strone statusu przypisujac zerowe wartosci do zmiennych tj. glowica, stol, fan, stan SD
-	// wywo³ywana raz w lcdinit()
+	// wywoï¿½ywana raz w lcdinit()
   void setpagePrinter() 
 	{
     char temp[8] = { 0 };
@@ -1726,7 +1726,7 @@
 			heatupenter.attachPop(sethotPopCallback, &heatupenter); // obsluga przycisku rozgrzej oba
 			hotendenter.attachPop(sethotendPopCallback, &hotendenter); //obsluga przycisku rozgrzej hotend
 			heatbedenter.attachPop(setheatbedPopCallback, &heatbedenter); //obsluga przycisku rozgrzej bed
-			chillenter.attachPop(sethotPopCallback, &chillenter); //obs³uga przycisku chlodzenie
+			chillenter.attachPop(sethotPopCallback, &chillenter); //obsï¿½uga przycisku chlodzenie
 
 			FanSetBtn.attachPop(setfanandgoPopCallback); //obsluga przycisku fan set
 
@@ -1851,7 +1851,7 @@
 		if (sd_status != lcd_sd_status && lcd_detected())								// sprawdz czy nastapila zmiana? SD DET ->
 		{																																// TAK:
 			SERIAL_ECHOLNPGM("zmiana sd det:");
-			if (!sd_status)																									// jeœli SD_DETECT == false:
+			if (!sd_status)																									// jeï¿½li SD_DETECT == false:
 			{
 				SERIAL_ECHOLNPGM("sd_status:false");
 				card.initsd();																								// inicjalizacja karty
@@ -1860,10 +1860,10 @@
 				SD.setValue(SDstatus, "printer");
 				if (lcd_sd_status != 2) LCD_MESSAGEPGM(MSG_SD_INSERTED);			// MSG
 			}
-			else																														// jeœli SD_DETECT == true:
+			else																														// jeï¿½li SD_DETECT == true:
 			{
 				SERIAL_ECHOLNPGM("sd_status:true");
-				card.release();																								// odmontuj kartê SD
+				card.release();																								// odmontuj kartï¿½ SD
 				setpageSD();																									// ustaw strone i przekaz flage do strony status
 				SDstatus = SD_NO_INSERT;
 				SD.setValue(SDstatus, "printer");

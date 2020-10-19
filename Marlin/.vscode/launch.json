@@ -12,7 +12,7 @@
             "type": "platformio-debug",
             "request": "launch",
             "name": "PIO Debug",
-            "executable": "d:/[] Google Drive/[] Drukarki 3D/Arduino sdk/[]GIT/Marlin-PrintoH3-Nextion3-MK4/Marlin/.pio/build/megaatmega2560/firmware.elf",
+            "executable": "g:/[]GIT/Marlin-MK4-1.3.1/Marlin/.pio/build/megaatmega2560/firmware.elf",
             "toolchainBinDir": "C:/Users/Job/.platformio/packages/toolchain-atmelavr/bin",
             "preLaunchTask": {
                 "type": "PlatformIO",
@@ -24,7 +24,7 @@
             "type": "platformio-debug",
             "request": "launch",
             "name": "PIO Debug (skip Pre-Debug)",
-            "executable": "d:/[] Google Drive/[] Drukarki 3D/Arduino sdk/[]GIT/Marlin-PrintoH3-Nextion3-MK4/Marlin/.pio/build/megaatmega2560/firmware.elf",
+            "executable": "g:/[]GIT/Marlin-MK4-1.3.1/Marlin/.pio/build/megaatmega2560/firmware.elf",
             "toolchainBinDir": "C:/Users/Job/.platformio/packages/toolchain-atmelavr/bin",
             "internalConsoleOptions": "openOnSessionStart"
         }
