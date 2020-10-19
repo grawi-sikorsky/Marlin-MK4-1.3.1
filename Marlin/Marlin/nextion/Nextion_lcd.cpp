@@ -809,7 +809,7 @@
           }
         }
       }
-      sendCommand("ref 0");
+      //sendCommand("ref 0");
     }
 
 		//
@@ -860,6 +860,11 @@
         slidermaxval = 0;
       else
         slidermaxval  = fileCnt - 6;
+
+			uint16_t hig = 210 - slidermaxval * 10;
+      if (hig < 10) hig = 10;
+		
+      sdlist.Set_cursor_height_hig(hig);	
 
       sdlist.setMaxval(slidermaxval);
       sdlist.setValue(slidermaxval,"sdcard");
@@ -941,6 +946,7 @@
 					sdrow5.getText(bufferson, sizeof(bufferson));
 			#endif
       menu_action_sddirectory(bufferson);
+			buzzer.tone(100, 2300);
     }
 
 		// NEXTION: Obsluga klikniecia przycisku Folder Up
@@ -948,6 +954,7 @@
       UNUSED(ptr);
       card.updir();
       setpageSD();
+			buzzer.tone(100, 2300);
     }
 
 		// NEXTION: Obsluga klikniecia linijek przycisku PAUSE / PLAY
@@ -971,6 +978,7 @@
 					#endif
 					lcd_setstatusPGM(PSTR(MSG_RESUME_PRINT));
         }
+				buzzer.tone(100, 2300);
       }
     }
   #endif 
@@ -1799,11 +1807,25 @@
 	// Wysyla koordynaty do do NEX / MOVE PAGE / STATUS / BEDLEVEL
   static void coordtoLCD() {
     char* valuetemp;
+		static float temppos[2];
     ZERO(bufferson);
     if (PageID == 2) {
-      LcdX.setText(ftostr41sign(LOGICAL_X_POSITION(current_position[X_AXIS])),"printer");
-      LcdY.setText(ftostr41sign(LOGICAL_Y_POSITION(current_position[Y_AXIS])),"printer");
-      LcdZ.setText(ftostr41sign(FIXFLOAT(LOGICAL_Z_POSITION(current_position[Z_AXIS]))),"printer");
+			// if sprawdza czy nastapila zmiana pozycji aby nie spamowalo po serialu pozycja bez zmian -> todo: przeniesc na 8 bit...
+			if( current_position[X_AXIS] != temppos[X_AXIS] )
+			{
+				LcdX.setText(ftostr41sign(LOGICAL_X_POSITION(current_position[X_AXIS])),"printer");
+				temppos[X_AXIS] = current_position[X_AXIS];
+			}
+			if( current_position[Y_AXIS] != temppos[Y_AXIS] )
+			{
+				LcdY.setText(ftostr41sign(LOGICAL_Y_POSITION(current_position[Y_AXIS])),"printer");
+				temppos[Y_AXIS] = current_position[Y_AXIS];
+			}
+			if( current_position[Z_AXIS] != temppos[Z_AXIS] )
+			{
+				LcdZ.setText(ftostr41sign(FIXFLOAT(LOGICAL_Z_POSITION(current_position[Z_AXIS]))),"printer");
+				temppos[Z_AXIS] = current_position[Z_AXIS];
+			}
     }
     else if (PageID == 5) {
       if (axis_homed[X_AXIS]) {
@@ -1907,6 +1929,7 @@
     if (!NextionON) return;
 	
     PageID = Nextion_PageID();
+		if(PageID == 100 || PageID == 101)	PageID = PreviousPage;		// jesli na serialu lipa (przyczyna?) to loop do nastepnej proby
 
     switch(PageID)
 		{
