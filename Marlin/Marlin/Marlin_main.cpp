@@ -7545,6 +7545,13 @@ inline void gcode_M109() {
 
         const float temp_diff = FABS(target_temp - temp);
 
+        millis_t tajm;
+        if((millis() - tajm) > 1000)
+        {
+          SERIAL_ECHOLN(FABS(target_temp - temp));
+          tajm = millis();
+        }
+
         if (!residency_start_ms) {
           // Start the TEMP_BED_RESIDENCY_TIME timer when we reach target temp for the first time.
           if (temp_diff < TEMP_BED_WINDOW) residency_start_ms = now;
