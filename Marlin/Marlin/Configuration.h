@@ -550,7 +550,7 @@
  * Override with M92
  *                                      X, Y, Z, E0 [, E1[, E2[, E3[, E4]]]]
  */
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 800, 160.0 }     // LV8729  (1/16, 1/16, 1/32, 1/16)
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 800, 148.0 }     // LV8729  (1/16, 1/16, 1/32, 1/16)
 //#define DEFAULT_AXIS_STEPS_PER_UNIT   { 160, 160, 800, 180 }// LV8729  (1/32, 1/32, 1/32, 1/32)
 //#define DEFAULT_AXIS_STEPS_PER_UNIT   { 320, 320, 800, 90 } // LV8729 (1/64, 1/64, 1/32, 1/16)
 //#define DEFAULT_AXIS_STEPS_PER_UNIT   { 640, 640, 800, 90 } // LV8729 (1/128, 1/128, 1/32, 1/16)
